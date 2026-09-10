@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Quiz App — Tugas Rutin 6</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+
+  <!-- TOP HEADER NAVBAR -->
+<header class="app-header">
+  <div class="header-container">
+    <div class="brand-logo">
+      <i class="fa-solid fa-brain"></i>
+      <span>QuizApp<sup>®</sup></span>
+    </div>
+    <div class="header-badge">
+      <span class="badge-text"><i class="fa-solid fa-graduation-cap"></i> T.FAHREZA | PSIK 25B</span>
+    </div>
+  </div>
+</header>
+
+  <!-- CONTAINER UTAMA (SPA CONTAINER) -->
+  <main class="quiz-wrapper">
+
+    <!-- 1. SCREEN: START MENU -->
+    <div id="start-screen" class="quiz-card">
+      <div class="quiz-header-icon">
+        <i class="fa-solid fa-laptop-code"></i>
+      </div>
+      <h1>Interactive Quiz App</h1>
+      <p>Uji pemahamanmu seputar Pemrograman Web, JavaScript, dan Ilmu Komputer.</p>
+      
+      <!-- Pilihan Tingkat Kesulitan -->
+      <div class="difficulty-selector">
+        <span class="difficulty-label">Pilih Tingkat Kesulitan:</span>
+        <div class="difficulty-options">
+          <button type="button" class="diff-btn active" data-count="5">Easy (5 Soal)</button>
+          <button type="button" class="diff-btn" data-count="10">Medium (10 Soal)</button>
+          <button type="button" class="diff-btn" data-count="20">Hard (20 Soal)</button>
+        </div>
+      </div>
+
+      <div class="highscore-badge">
+        <i class="fa-solid fa-trophy"></i> High Score: <span id="display-highscore">0</span>
+      </div>
+
+      <button id="start-btn" class="btn-primary">Mulai Kuis Sekarang</button>
+    </div>
+
+    <!-- 2. SCREEN: QUIZ INTERACTIVE -->
+    <div id="quiz-screen" class="quiz-card hidden">
+      <div class="quiz-top-bar">
+        <span id="question-counter">Soal 1 dari 10</span>
+        <div id="timer-box" class="timer-container">
+          <i class="fa-regular fa-clock"></i>
+          <span id="time-left">15</span>s
+        </div>
+      </div>
+
+      <div id="dots-container" class="question-dots-container"></div>
+
+      <!-- Progress Bar Visual -->
+      <div class="progress-bar-track">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+
+      <div class="question-box">
+        <h2 id="question-text">Memuat pertanyaan...</h2>
+      </div>
+
+      <!-- Event Delegation Container untuk Opsi Jawaban -->
+      <div id="options-container" class="options-container">
+        <!-- Opsi jawaban akan di-render aman menggunakan createElement -->
+      </div>
+
+      <!-- CONTAINER PENJELASAN (EXPLANATION BOX) -->
+      <div id="explanation-box" class="explanation-box hidden">
+        <div class="explanation-title">
+          <i class="fa-solid fa-circle-info"></i> Pembahasan:
+        </div>
+        <p id="explanation-text"></p>
+      </div>
+
+      <div class="quiz-footer-nav">
+        <button id="next-btn" class="btn-primary hidden">Lanjut Soal</button>
+      </div>
+    </div>
+
+    <!-- 3. SCREEN: RESULT / SKOR AKHIR -->
+    <div id="result-screen" class="quiz-card hidden">
+      <div class="result-icon-wrap">
+        <i class="fa-solid fa-award"></i>
+      </div>
+      <h2>Kuis Selesai!</h2>
+      <p class="result-subtitle">Berikut adalah hasil evaluasi performa kuis kamu:</p>
+
+      <div class="score-card-final">
+        <span class="score-label">Skor Akhir</span>
+        <h3 id="final-score">0 / 10</h3>
+        <p id="score-message" class="score-msg">Kerja bagus!</p>
+      </div>
+
+      <div class="result-actions">
+        <button id="restart-btn" class="btn-primary"><i class="fa-solid fa-rotate-right"></i> Ulangi Kuis</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <p>&copy; 2026 QuizApp — Tengku Fahreza (PSIK 25B)</p>
+  </footer>
+
+  <script src="js/questions.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

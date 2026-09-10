@@ -1,0 +1,432 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.50)), 
+  url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1920&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.quiz-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.quiz-card {
+  background: rgba(15, 23, 42, 0.45);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
+
+.quiz-header-icon, .result-icon-wrap {
+  font-size: 2.5rem;
+  color: #38bdf8;
+  margin-bottom: 1rem;
+}
+
+.quiz-card h1, .quiz-card h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #f8fafc;
+}
+
+.quiz-card p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ---------- PILIHAN DIFFICULTY (WARNA KUSTOM KETIKA AKTIF) ---------- */
+.difficulty-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.difficulty-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.difficulty-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.diff-btn {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid #334155;
+  color: #94a3b8;
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.diff-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+/* Warna Kustom Saat Tombol Dipilih (Active) */
+.diff-btn[data-count="5"].active {
+  background: rgba(22, 101, 52, 0.9);
+  border-color: #22c55e;
+  color: #dcfce7;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+
+.diff-btn[data-count="10"].active {
+  background: rgba(161, 98, 7, 0.9);
+  border-color: #eab308;
+  color: #fef9c3;
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.4);
+}
+
+.diff-btn[data-count="20"].active {
+  background: rgba(153, 27, 27, 0.9);
+  border-color: #ef4444;
+  color: #fee2e2;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+.quiz-meta-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.quiz-meta-info i {
+  color: #38bdf8;
+}
+
+.highscore-badge {
+  background: rgba(51, 65, 85, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #fbbf24;
+}
+
+.highscore-badge i {
+  margin-right: 0.35rem;
+}
+
+.btn-primary {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #0369a1;
+  transform: translateY(-2px);
+}
+
+/* Quiz Active Screen */
+.quiz-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.timer-container {
+  background: rgba(51, 65, 85, 0.5);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  color: #38bdf8;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  background: #334155;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: #38bdf8;
+  transition: width 0.4s ease;
+}
+
+.question-box {
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+.question-box h2 {
+  font-size: 1.15rem;
+  line-height: 1.4;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.option-btn {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid #334155;
+  color: #f8fafc;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option-btn:hover:not(:disabled) {
+  background: #334155;
+  border-color: #38bdf8;
+}
+
+/* Feedback Visual Opsi */
+.option-btn.correct {
+  background: rgba(22, 101, 52, 0.8) !important;
+  border-color: #22c55e !important;
+  color: #dcfce7;
+}
+
+.option-btn.incorrect {
+  background: rgba(153, 27, 27, 0.8) !important;
+  border-color: #ef4444 !important;
+  color: #fee2e2;
+}
+
+.quiz-footer-nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Result Screen */
+.score-card-final {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.score-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.score-card-final h3 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 0.25rem;
+}
+
+.score-msg {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+}
+
+.main-footer {
+  position: relative;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---------- INDIKATOR DOTS SOAL (REAL-TIME TRACKER) ---------- */
+.question-dots-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #334155;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  transform: scale(1.2);
+}
+
+.dot.correct {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+.dot.incorrect {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+/* ---------- TIMER KRITIS (CRITICAL WARNING) ---------- */
+.timer-container.warning {
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.2) !important;
+  border: 1px solid #ef4444;
+  animation: pulse-red 0.8s infinite alternate;
+}
+
+@keyframes pulse-red {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* ---------- ANIMASI TRANSIKSI CARD SOAL ---------- */
+.quiz-card-animate {
+  animation: slideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- EXPLANATION BOX ---------- */
+.explanation-box {
+  background: rgba(30, 41, 59, 0.9);
+  border-left: 4px solid #38bdf8;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  line-height: 1.4;
+  animation: slideUpFade 0.3s ease forwards;
+}
+
+.explanation-title {
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+/* ---------- TOP HEADER NAVBAR ---------- */
+.app-header {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.75);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.85rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #f8fafc;
+}
+
+.brand-logo i {
+  color: #38bdf8;
+  font-size: 1.25rem;
+}
+
+.brand-logo sup {
+  font-size: 0.65rem;
+  color: #38bdf8;
+}
+
+.header-badge {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
