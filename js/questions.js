@@ -140,7 +140,7 @@ const quizQuestions = [
     question: "Metode HTTP mana yang umumnya digunakan untuk mengirim data baru ke server?",
     options: ["GET", "POST", "DELETE", "HEAD"],
     answer: 1,
-    explanation: "Metode POST digunakan untuk mengirimkan ent 데이터를 ke sumber daya tertentu, seringkali menyebabkan perubahan state di server."
+    explanation: "Metode POST digunakan untuk mengirimkan data ke sumber daya tertentu, seringkali menyebabkan perubahan state di server."
   },
   {
     question: "Apa komponen utama yang berfungsi mengeksekusi instruksi program di dalam komputer?",
