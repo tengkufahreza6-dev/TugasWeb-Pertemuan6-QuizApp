@@ -14,17 +14,23 @@
 <body>
 
   <!-- TOP HEADER NAVBAR -->
-<header class="app-header">
-  <div class="header-container">
-    <div class="brand-logo">
-      <i class="fa-solid fa-brain"></i>
-      <span>QuizApp<sup>®</sup></span>
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo">
+        <i class="fa-solid fa-brain"></i>
+        <span>QuizApp<sup>®</sup></span>
+      </div>
+      <div class="header-controls">
+        <!-- Tombol Audio Toggle -->
+        <button id="audio-toggle-btn" class="audio-btn" title="Mute/Unmute Audio">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+        <div class="header-badge">
+          <span class="badge-text"><i class="fa-solid fa-graduation-cap"></i> T.FAHREZA | PSIK 25B</span>
+        </div>
+      </div>
     </div>
-    <div class="header-badge">
-      <span class="badge-text"><i class="fa-solid fa-graduation-cap"></i> T.FAHREZA | PSIK 25B</span>
-    </div>
-  </div>
-</header>
+  </header>
 
   <!-- CONTAINER UTAMA (SPA CONTAINER) -->
   <main class="quiz-wrapper">
@@ -76,9 +82,7 @@
       </div>
 
       <!-- Event Delegation Container untuk Opsi Jawaban -->
-      <div id="options-container" class="options-container">
-        <!-- Opsi jawaban akan di-render aman menggunakan createElement -->
-      </div>
+      <div id="options-container" class="options-container"></div>
 
       <!-- CONTAINER PENJELASAN (EXPLANATION BOX) -->
       <div id="explanation-box" class="explanation-box hidden">

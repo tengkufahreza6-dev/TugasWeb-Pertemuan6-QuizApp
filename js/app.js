@@ -1,5 +1,5 @@
 // ============================================
-// MAIN APP - DIFFICULTY SELECTOR & BEFOREUNLOAD
+// MAIN APP - AUDIO SYNTHESIZER & QUIZ ENGINE
 // ============================================
 
 let currentQuestions = [];
@@ -9,10 +9,102 @@ let timer = null;
 let timeLeft = 15;
 let isAnswered = false;
 let selectedQuestionCount = 5; // Default Easy
+let isMuted = false;
 
 let highscore = localStorage.getItem('quiz_highscore') || 0;
 
-// Elemen DOM
+// ---------- WEB AUDIO API SYNTHESIZER ----------
+let audioCtx = null;
+
+const initAudioContext = () => {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+};
+
+const playSound = (type) => {
+  if (isMuted) return;
+  initAudioContext();
+  if (!audioCtx) return;
+
+  const now = audioCtx.currentTime;
+
+  if (type === 'click') {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, now);
+    osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.05);
+  } 
+  else if (type === 'correct') {
+    // Chord C-Major (C5 & E5) Arpeggio
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + (i * 0.08));
+      gain.gain.setValueAtTime(0.15, now + (i * 0.08));
+      gain.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.08) + 0.2);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + (i * 0.08));
+      osc.stop(now + (i * 0.08) + 0.2);
+    });
+  } 
+  else if (type === 'incorrect') {
+    // Low Sawtooth Tone
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.linearRampToValueAtTime(90, now + 0.25);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.25);
+  } 
+  else if (type === 'tick') {
+    // Critical Timer Ping (Detik Kritis <= 5)
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, now); // Tone A5
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+  else if (type === 'finish') {
+    // Fanfare Result Screen
+    [440, 554.37, 659.25, 880].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + (i * 0.12));
+      gain.gain.setValueAtTime(0.2, now + (i * 0.12));
+      gain.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.12) + 0.3);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + (i * 0.12));
+      osc.stop(now + (i * 0.12) + 0.3);
+    });
+  }
+};
+
+// ---------- ELEMEN DOM ----------
 const startScreen = document.getElementById('start-screen');
 const quizScreen = document.getElementById('quiz-screen');
 const resultScreen = document.getElementById('result-screen');
@@ -21,6 +113,7 @@ const startBtn = document.getElementById('start-btn');
 const nextBtn = document.getElementById('next-btn');
 const restartBtn = document.getElementById('restart-btn');
 const diffButtons = document.querySelectorAll('.diff-btn');
+const audioToggleBtn = document.getElementById('audio-toggle-btn');
 
 const questionCounter = document.getElementById('question-counter');
 const timeLeftDisplay = document.getElementById('time-left');
@@ -41,9 +134,24 @@ document.addEventListener('DOMContentLoaded', () => {
   displayHighscore.textContent = highscore;
 });
 
+// Audio Mute/Unmute Toggle
+audioToggleBtn.addEventListener('click', () => {
+  isMuted = !isMuted;
+  const icon = audioToggleBtn.querySelector('i');
+  if (isMuted) {
+    icon.className = 'fa-solid fa-volume-xmark';
+    audioToggleBtn.classList.add('muted');
+  } else {
+    icon.className = 'fa-solid fa-volume-high';
+    audioToggleBtn.classList.remove('muted');
+    playSound('click');
+  }
+});
+
 // Event Listener untuk Tombol Pilihan Difficulty
 diffButtons.forEach(btn => {
   btn.addEventListener('click', () => {
+    playSound('click');
     diffButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     selectedQuestionCount = parseInt(btn.dataset.count);
@@ -54,7 +162,7 @@ diffButtons.forEach(btn => {
 window.addEventListener('beforeunload', (e) => {
   if (!quizScreen.classList.contains('hidden')) {
     e.preventDefault();
-    e.returnValue = ''; // Standar browser untuk menampilkan dialog konfirmasi
+    e.returnValue = '';
   }
 });
 
@@ -71,7 +179,6 @@ const shuffleArray = (array) => {
 // Menyiapkan Data Soal Berdasarkan Jumlah yang Dipilih
 const prepareShuffledQuestions = () => {
   const rawQuestions = shuffleArray(quizQuestions);
-  // Potong array sesuai jumlah tingkat kesulitan yang dipilih (5, 10, atau 20)
   const slicedQuestions = rawQuestions.slice(0, selectedQuestionCount);
 
   return slicedQuestions.map(q => {
@@ -109,6 +216,7 @@ const updateDots = (index, status) => {
 
 // Mulai Kuis
 startBtn.addEventListener('click', () => {
+  playSound('click');
   if (typeof quizQuestions === 'undefined' || !quizQuestions.length) {
     alert('Data soal belum terhubung! Periksa berkas js/questions.js kamu.');
     return;
@@ -135,7 +243,6 @@ const loadQuestion = () => {
   nextBtn.classList.add('hidden');
   explanationBox.classList.add('hidden');
 
-  // PERBARUI TEKS TOMBOL: Jika soal terakhir, ubah teksnya
   if (currentQuestionIndex === currentQuestions.length - 1) {
     nextBtn.textContent = 'Selesai & Lihat Hasil';
   } else {
@@ -173,7 +280,7 @@ const loadQuestion = () => {
   startTimer();
 };
 
-// Timer Mundur & Warning Kritis
+// Timer Mundur & Warning Kritis dengan Sound Ping
 const startTimer = () => {
   timer = setInterval(() => {
     timeLeft--;
@@ -181,6 +288,7 @@ const startTimer = () => {
 
     if (timeLeft <= 5) {
       timerBox.classList.add('warning');
+      playSound('tick'); // Bunyi beep saat waktu kritis
     }
 
     if (timeLeft <= 0) {
@@ -200,6 +308,7 @@ const showExplanation = () => {
 const handleTimeout = () => {
   if (isAnswered) return;
   isAnswered = true;
+  playSound('incorrect');
   updateDots(currentQuestionIndex, 'incorrect');
   highlightCorrectAnswer();
   disableAllOptions();
@@ -227,10 +336,12 @@ optionsContainer.addEventListener('click', (e) => {
   const isCorrect = currentQ.options[selectedIndex].isCorrect;
 
   if (isCorrect) {
+    playSound('correct');
     target.classList.add('correct');
     score++;
     updateDots(currentQuestionIndex, 'correct');
   } else {
+    playSound('incorrect');
     target.classList.add('incorrect');
     highlightCorrectAnswer();
     updateDots(currentQuestionIndex, 'incorrect');
@@ -257,6 +368,7 @@ const disableAllOptions = () => {
 };
 
 nextBtn.addEventListener('click', () => {
+  playSound('click');
   currentQuestionIndex++;
   if (currentQuestionIndex < currentQuestions.length) {
     loadQuestion();
@@ -271,6 +383,7 @@ const showResultScreen = () => {
   resultScreen.classList.add('quiz-card-animate');
   progressBarFill.style.width = `100%`;
 
+  playSound('finish');
   finalScoreDisplay.textContent = `${score} / ${currentQuestions.length}`;
 
   if (score === currentQuestions.length) {
@@ -289,6 +402,7 @@ const showResultScreen = () => {
 };
 
 restartBtn.addEventListener('click', () => {
+  playSound('click');
   currentQuestionIndex = 0;
   score = 0;
   resultScreen.classList.add('hidden');

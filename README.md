@@ -17,29 +17,36 @@ Aplikasi ini telah memenuhi seluruh kriteria wajib dan fitur bonus pada rubrik p
    - **Medium:** 10 Pertanyaan
    - **Hard:** 20 Pertanyaan
 
-2. **Render DOM Safe (XSS Protection):**
+2. **Web Audio API Synthesizer & Audio Feedback (Baru ⭐):**
+   Integrasi efek suara murni berbasis sintesis frekuensi (*zero external MP3 files*) untuk memberikan umpan balik pendengaran instan:
+   - Efek suara saat memilih opsi (Jawaban Benar / Salah).
+   - *Critical Timer Audio Ping* yang berbunyi pada 5 detik terakhir.
+   - Efek suara *Fanfare* saat sesi kuis selesai.
+   - Fitur **Mute/Unmute Audio Toggle** di bar navigasi atas.
+
+3. **Render DOM Safe (XSS Protection):**
    Seluruh penyisipan teks soal, opsi jawaban, dan penjelasan dikelola secara aman menggunakan `textContent` dan `document.createElement()`, menghindari penggunaan `innerHTML` pada data masukan.
 
-3. **Event Delegation:**
+4. **Event Delegation:**
    Penanganan klik opsi jawaban memanfaatkan mekanisme *Event Delegation* pada kontainer utama opsi untuk efisiensi eksekusi memori.
 
-4. **Algoritma Pengacakan (Fisher-Yates Shuffle):**
+5. **Algoritma Pengacakan (Fisher-Yates Shuffle):**
    Setiap sesi kuis baru mengacak urutan soal dan urutan pilihan ganda (A, B, C, D) secara otomatis agar kuis memiliki *replay value* tinggi.
 
-5. **Timer & Warning Visual Kritis:**
-   Setiap soal diberi alokasi waktu 15 detik. Peringatan visual berkedip merah (*warning pulse*) akan aktif secara otomatis jika waktu tersisa di bawah 5 detik.
+6. **Timer & Warning Visual Kritis:**
+   Setiap soal diberi alokasi waktu 15 detik. Peringatan visual berkedip merah (*warning pulse*) dan indikator audio aktif secara otomatis jika waktu tersisa di bawah 5 detik.
 
-6. **Feedback Visual Instan & Explanation Box:**
+7. **Feedback Visual Instan & Explanation Box:**
    Memberikan indikator warna langsung (hijau untuk benar, merah untuk salah) serta memunculkan kotak pembahasan (*Explanation Box*) ringkas setelah soal dijawab atau waktu habis.
 
-7. **Question Dots Tracker & Progress Bar:**
+8. **Question Dots Tracker & Progress Bar:**
    Indikator titik (*dots tracker*) dinamis di bagian atas soal yang mencatat status jawaban secara *real-time*, didukung *progress bar* visual yang bergerak seiring kemajuan kuis.
 
-8. **Penyimpanan High Score Persisten:**
+9. **Penyimpanan High Score Persisten:**
    Perhitungan skor otomatis di akhir sesi dengan integrasi `localStorage` untuk menyimpan rekor nilai tertinggi secara permanen di browser.
 
-9. **UX Polish & Beforeunload Protection:**
-   Penyesuaian konteks tombol navigasi utama (berubah menjadi *"Selesai & Lihat Hasil"* pada nomor terakhir) serta proteksi `beforeunload` untuk mencegah pengguna kehilangan progres kuis saat tidak sengaja me-refresh atau menutup tab browser.
+10. **UX Polish & Beforeunload Protection:**
+    Penyesuaian konteks tombol navigasi utama (berubah menjadi *"Selesai & Lihat Hasil"* pada nomor terakhir) serta proteksi `beforeunload` untuk mencegah pengguna kehilangan progres kuis saat tidak sengaja me-refresh atau menutup tab browser.
 
 ---
 
@@ -47,7 +54,7 @@ Aplikasi ini telah memenuhi seluruh kriteria wajib dan fitur bonus pada rubrik p
 
 - **HTML5** — Struktur dokumen semantik dan kontainer SPA.
 - **CSS3** — Custom Styling, Dark Glassmorphism, Responsive Grid, dan Animasi Transisi (`@keyframes`).
-- **JavaScript (Vanilla ES6+)** — State Management, Manipulasi DOM, Timer Interval, Event Delegation, dan LocalStorage API.
+- **JavaScript (Vanilla ES6+)** — State Management, Manipulasi DOM, Web Audio API (Synthesizer), Timer Interval, Event Delegation, dan LocalStorage API.
 - **Font Awesome 6 & Google Fonts (Inter)** — Ikonografi dan tipografi antarmuka modern.
 
 ---
